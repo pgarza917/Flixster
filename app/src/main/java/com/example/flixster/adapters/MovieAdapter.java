@@ -1,6 +1,7 @@
 package com.example.flixster.adapters;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,8 +72,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
-            // We need to use Glide to load movie poster as no built-in Android library does this
-            Glide.with(context).load(movie.getPosterPath()).into(ivPoster);
+            String imgUrl;
+            // If the phone is in portrait mode
+            if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                // set imageUrl = posterPath
+                imgUrl = movie.getPosterPath();
+            }
+            // Else
+            else {
+                // set imageUrl = backdropPath
+                imgUrl = movie.getBackdropPath();
+            }
+            // We need to use Glide to load movie poster/backdrop as no
+            // built-in Android library does this
+            Glide.with(context).load(imgUrl).into(ivPoster);
         }
     }
 }
