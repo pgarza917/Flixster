@@ -10,6 +10,7 @@ import android.util.Log;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.adapters.MovieAdapter;
+import com.example.flixster.models.Config;
 import com.example.flixster.models.Movie;
 
 import org.json.JSONArray;
@@ -28,8 +29,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=9144031636e4d899903ed80fc2b6d903&language=en-US&page=1";
     // Tag string defined to easily log data
     public static final String TAG = "MainActivity";
+    // URL for configuration end point of movies API that we want to access
+    public static final String CONFIG_URL = "https://api.themoviedb.org/3/configuration?api_key=9144031636e4d899903ed80fc2b6d903";
 
     List<Movie> movies;
+    Config config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +51,27 @@ public class MainActivity extends AppCompatActivity {
         // Set a Layout Manager on the Recycler View
         rvMovies.setLayoutManager(new LinearLayoutManager(this));
 
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
+        AsyncHttpClient configClient = new AsyncHttpClient();
+        configClient.get(CONFIG_URL, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONObject images = jsonObject.getJSONObject("images");
+                    config = new Config(images);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d(TAG, "OnFailure configClient");
+            }
+        });
+
+        AsyncHttpClient nowPlayingClient = new AsyncHttpClient();
+        nowPlayingClient.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.d(TAG, "OnSuccess");
@@ -57,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONArray results = jsonObject.getJSONArray("results");
                     Log.i(TAG, "Results: " + results.toString());
-                    movies.addAll(Movie.fromJsonArray(results));
+                    movies.addAll(Movie.fromJsonArray(results, config));
+
                     movieAdapter.notifyDataSetChanged();
                     Log.i(TAG, "Movies: " + movies.size());
                 } catch (JSONException e) {
@@ -67,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d(TAG, "OnFailure");
+                Log.d(TAG, "OnFailure nowPlayingClient");
             }
         });
-
     }
 }
