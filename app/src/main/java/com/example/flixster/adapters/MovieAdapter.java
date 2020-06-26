@@ -75,31 +75,49 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         // Populate each view in the VH with its corresponding data in the Movie object
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
-            tvOverview.setText(movie.getOverview());
+
             String imgUrl;
-            int placeholder;
+            int placeholder, maxCharsDisplayed;
             // If the phone is in portrait mode
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 // set imageUrl = posterPath
+                maxCharsDisplayed = 150;
                 imgUrl = movie.getPosterPath();
                 placeholder = R.drawable.flicks_movie_placeholder;
             }
             // Else
             else {
                 // set imageUrl = backdropPath
+                maxCharsDisplayed = 250;
                 imgUrl = movie.getBackdropPath();
                 placeholder = R.drawable.flicks_backdrop_placeholder;
             }
+
+            String overview;
+            // If the movie's overview is less than 146 characters, we don't need to
+            // concatenate a "..." as the entire overview can be displayed
+            if (movie.getOverview().length() < maxCharsDisplayed - 4) {
+                overview = movie.getOverview();
+            }
+            // Else we have too long of an overview so we need to concatenate our overview
+            // with a "..." to imply there's more to read
+            else {
+                String sub = movie.getOverview().substring(0, maxCharsDisplayed - 4);
+                overview = String.format("%s...", sub);
+            }
+            tvOverview.setText(overview);
 
             // We need to use Glide to load movie poster/backdrop as no
             // built-in Android library does this
             int radius = 30, margin = 0;
             Glide.with(context)
                     .load(imgUrl)
-                    .placeholder(placeholder)
+                    /*.placeholder(placeholder)
                     .transform(new RoundedCornersTransformation(radius, margin))
-                    .override(ivPoster.getWidth(), ivPoster.getHeight())
+                    .override(ivPoster.getWidth(), ivPoster.getHeight())*/
                     .into(ivPoster);
+
+            /* . */
         }
     }
 }
