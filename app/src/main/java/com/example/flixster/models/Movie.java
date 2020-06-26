@@ -23,11 +23,11 @@ public class Movie {
     String posterPath;
     String title;
     String overview;
-    String baseUrl;
     String posterSize;
     String backdropSize;
     String releaseDate;
     Double voteAverage;
+    Integer id;
 
     // Default, no-arguments constructor
     public Movie() {}
@@ -40,23 +40,25 @@ public class Movie {
         this.overview = jsonObject.getString("overview");
         this.releaseDate = jsonObject.getString("release_date");
         this.voteAverage = jsonObject.getDouble("vote_average");
+        this.id = jsonObject.getInt("id");
+        this.posterSize = "w342";
+        this.backdropSize = "w780";
     }
 
     // Takes a Json array and Config Object and constructs a list of Movie objects from the movie data
     // stored in the Json array
-    public static List<Movie> fromJsonArray(JSONArray movieJsonArray, Config config) throws JSONException {
+    public static List<Movie> fromJsonArray(JSONArray movieJsonArray) throws JSONException {
         List<Movie> movies = new ArrayList<>();
 
         for (int i = 0; i < movieJsonArray.length(); i++)
         {
             movies.add(new Movie(movieJsonArray.getJSONObject(i)));
-            movies.get(movies.size() - 1).setBackdropSize(config.getBackdropSize());
-            movies.get(movies.size() - 1).setPosterSize(config.getPosterSize());
-            movies.get(movies.size() - 1).setBaseUrl(config.getBaseUrl());
         }
 
         return movies;
     }
+
+    public Integer getId() { return id; }
 
     public String getReleaseDate() {
         return releaseDate;
@@ -66,7 +68,7 @@ public class Movie {
         return voteAverage;
     }
 
-    public void setPosterSize(String posterSize) {
+    /*public void setPosterSize(String posterSize) {
         this.posterSize = posterSize;
     }
 
@@ -76,14 +78,14 @@ public class Movie {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
+    }*/
 
     public String getPosterPath() {
-        return baseUrl + posterSize + posterPath;
+        return String.format("https://image.tmdb.org/t/p/%s%s", posterSize, posterPath);
     }
 
     public String getBackdropPath() {
-        return baseUrl + backdropSize + backdropPath;
+        return String.format("https://image.tmdb.org/t/p/%s%s", backdropSize, backdropPath);
     }
 
     public String getTitle() {

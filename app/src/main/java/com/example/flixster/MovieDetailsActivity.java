@@ -2,23 +2,43 @@ package com.example.flixster;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.models.Movie;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import okhttp3.Headers;
+
 public class MovieDetailsActivity extends AppCompatActivity {
+
+    public static final String baseUrl = "https://api.themoviedb.org/3/movie/";
+    public static final String midUrl =  "/videos?api_key=";
+    public static final String endUrl = "&language=en-US";
+    private static final String TAG = "MovieDetailsActivity";
 
     Movie movie;
     TextView tvTitle;
     RatingBar rbVoteAverage;
     TextView tvDate;
     TextView tvOverview;
+    ImageView ivBackdrop;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +55,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         rbVoteAverage = findViewById(R.id.rbVoteAverage);
         tvDate = findViewById(R.id.tvDate);
         tvOverview = findViewById(R.id.tvOverview);
+        ivBackdrop = findViewById(R.id.ivBackdrop);
+        id = "";
 
         // Displaying movie title
         tvTitle.setText(movie.getTitle());
@@ -55,5 +77,59 @@ public class MovieDetailsActivity extends AppCompatActivity {
             voteAverage /= 2.0f;
         }
         rbVoteAverage.setRating(voteAverage);
+
+        // Displaying the backdrop image
+        Glide.with(this)
+                .load(movie.getBackdropPath())
+                .placeholder(R.drawable.flicks_backdrop_placeholder)
+                .into(ivBackdrop);
+
+        // Constructing full url to make API request soon
+        String fullUrl = String.format("%s%d%s%s%s", baseUrl, movie.getId(), midUrl, getString(R.string.mdb_api_key), endUrl);
+
+        // API request to /movies/{movie_id}/videos
+        AsyncHttpClient videoClient = new AsyncHttpClient();
+        videoClient.get(fullUrl, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                // Parsing through retrieved json file
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONArray results = jsonObject.getJSONArray("results");
+                    JSONObject resultsJSONObject = results.getJSONObject(0);
+                    id = resultsJSONObject.getString("key");
+                    Log.d(TAG, "onSuccess");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d(TAG, "onFailure: API request failed");
+            }
+        });
+
+        ivBackdrop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Only attempt to start new activity if key for video has been retrieved
+                if (!id.isEmpty()) {
+                    // Get context from view
+                    Context context = view.getContext();
+                    // Create new intent to launch trailer activity
+                    Intent intent = new Intent(context, MovieTrailerActivity.class);
+                    // Pass the key to the new activity to be able to play trailer
+                    intent.putExtra(String.class.getSimpleName(), Parcels.wrap(id));
+                    // Display the activity
+                    context.startActivity(intent);
+                }
+                // Display toast to notify user that trailer is not available if
+                // key was not able to be retrieved
+                else {
+                    Toast.makeText(getApplicationContext(), "No trailer for this movie", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
