@@ -3,6 +3,7 @@ package com.example.flixster;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -35,15 +36,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
         tvDate = findViewById(R.id.tvDate);
         tvOverview = findViewById(R.id.tvOverview);
 
-        // Displaying movie title, release date, and overview
+        // Displaying movie title
         tvTitle.setText(movie.getTitle());
 
+        // Displaying movie release date with concatenation
         String releaseDate = String.format("Released: %s", movie.getReleaseDate());
         tvDate.setText(releaseDate);
 
+        // Displaying movie overview and setting scrolling movement in case of long
+        // overview
         tvOverview.setText(movie.getOverview());
+        tvOverview.setMovementMethod(new ScrollingMovementMethod());
 
-        // Displaying vote average with rating stars
+        // Displaying vote average with rating stars. Need to divide to scale to rating
+        // of 0 to 5 instead of 0 to 10
         float voteAverage = movie.getVoteAverage().floatValue();
         if (voteAverage > 0) {
             voteAverage /= 2.0f;
