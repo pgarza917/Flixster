@@ -15,6 +15,7 @@ import com.example.flixster.models.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=9144031636e4d899903ed80fc2b6d903&language=en-US&page=1";
     // Tag string defined to easily log data
     public static final String TAG = "MainActivity";
-    // URL for configuration end point of movies API that we want to access
-    public static final String CONFIG_URL = "https://api.themoviedb.org/3/configuration?api_key=9144031636e4d899903ed80fc2b6d903";
 
     List<Movie> movies;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         //getSupportActionBar().hide();
         RecyclerView rvMovies = findViewById(R.id.rvMovies);
         movies = new ArrayList<>();
+        id = "";
 
         // Create the adapter
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
@@ -74,5 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "OnFailure nowPlayingClient");
             }
         });
+
+
     }
 }

@@ -16,17 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.MovieDetailsActivity;
 import com.example.flixster.R;
 import com.example.flixster.models.Movie;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import okhttp3.Headers;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+
+    private static final String TAG = "MovieAdapter";
 
     Context context;        // Defines where this adapter is being constructed from
     List<Movie> movies;     // Data source (Movie is model class)
@@ -118,8 +126,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             Glide.with(context)
                     .load(imgUrl)
                     .placeholder(placeholder)
-                    /*.transform(new RoundedCornersTransformation(radius, margin))
-                    .override(ivPoster.getWidth(), ivPoster.getHeight())*/
+                    .transform(new RoundedCornersTransformation(radius, margin))
+                    //.override(ivPoster.getWidth(), ivPoster.getHeight())
                     .into(ivPoster);
         }
 
@@ -132,7 +140,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 Movie movie = movies.get(position);
 
                 // Creating an intent to show MovieDetailsActivity
-                Intent intent = new Intent(context, MovieDetailsActivity.class);
+                final Intent intent = new Intent(context, MovieDetailsActivity.class);
 
                 // Pass the movie to new Activity, serialized by Parcel.wrap()
                 intent.putExtra(Movie.class.getSimpleName(), Parcels.wrap(movie));

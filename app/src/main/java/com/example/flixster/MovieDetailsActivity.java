@@ -17,6 +17,10 @@ import com.bumptech.glide.Glide;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.models.Movie;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,12 +29,13 @@ import org.parceler.Parcels;
 
 import okhttp3.Headers;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
+    private static final String TAG = "MovieDetailsActivity";
+    public static final int RECOVERY_REQUEST = 1;
 
     public static final String baseUrl = "https://api.themoviedb.org/3/movie/";
     public static final String midUrl =  "/videos?api_key=";
     public static final String endUrl = "&language=en-US";
-    private static final String TAG = "MovieDetailsActivity";
 
     Movie movie;
     TextView tvTitle;
@@ -39,6 +44,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TextView tvOverview;
     ImageView ivBackdrop;
     String id;
+    YouTubePlayerView youTubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         tvOverview = findViewById(R.id.tvOverview);
         ivBackdrop = findViewById(R.id.ivBackdrop);
         id = "";
+        youTubePlayerView = findViewById(R.id.youtubePlayerView);
+
+        youTubePlayerView.initialize(getString(R.string.yt_api_key), this);
 
         // Displaying movie title
         tvTitle.setText(movie.getTitle());
@@ -85,14 +94,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .into(ivBackdrop);
 
         // Constructing full url to make API request soon
-        String fullUrl = String.format("%s%d%s%s%s", baseUrl, movie.getId(), midUrl, getString(R.string.mdb_api_key), endUrl);
+        String fullUrl = String.format("%s%d%s%s%s", baseUrl, movie.getId(), midUrl, "9144031636e4d899903ed80fc2b6d903", endUrl);
 
         // API request to /movies/{movie_id}/videos
         AsyncHttpClient videoClient = new AsyncHttpClient();
         videoClient.get(fullUrl, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                // Parsing through retrieved json file
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray results = jsonObject.getJSONArray("results");
@@ -106,30 +114,31 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d(TAG, "onFailure: API request failed");
+                Log.d(TAG, "onFailure()");
             }
         });
+    }
 
-        ivBackdrop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Only attempt to start new activity if key for video has been retrieved
-                if (!id.isEmpty()) {
-                    // Get context from view
-                    Context context = view.getContext();
-                    // Create new intent to launch trailer activity
-                    Intent intent = new Intent(context, MovieTrailerActivity.class);
-                    // Pass the key to the new activity to be able to play trailer
-                    intent.putExtra(String.class.getSimpleName(), Parcels.wrap(id));
-                    // Display the activity
-                    context.startActivity(intent);
-                }
-                // Display toast to notify user that trailer is not available if
-                // key was not able to be retrieved
-                else {
-                    Toast.makeText(getApplicationContext(), "No trailer for this movie", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+        youTubePlayer.cueVideo(id);
+        youTubePlayer.setFullscreen(false);
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        Log.d(TAG, "onInitializationFailure: Failed initialization");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RECOVERY_REQUEST) {
+            // Retry initialization if user performed a recovery action
+            getYouTubePlayerProvider().initialize(getString(R.string.yt_api_key), this);
+        }
+    }
+
+    protected YouTubePlayer.Provider getYouTubePlayerProvider() {
+        return youTubePlayerView;
     }
 }
