@@ -50,25 +50,6 @@ public class MainActivity extends AppCompatActivity {
         // Set a Layout Manager on the Recycler View
         rvMovies.setLayoutManager(new LinearLayoutManager(this));
 
-        /*AsyncHttpClient configClient = new AsyncHttpClient();
-        configClient.get(CONFIG_URL, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                JSONObject jsonObject = json.jsonObject;
-                try {
-                    JSONObject images = jsonObject.getJSONObject("images");
-                    config = new Config(images);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d(TAG, "OnFailure configClient");
-            }
-        });*/
-
         AsyncHttpClient nowPlayingClient = new AsyncHttpClient();
         nowPlayingClient.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
             @Override

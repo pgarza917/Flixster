@@ -68,18 +68,6 @@ public class Movie {
         return voteAverage;
     }
 
-    /*public void setPosterSize(String posterSize) {
-        this.posterSize = posterSize;
-    }
-
-    public void setBackdropSize(String backdropSize) {
-        this.backdropSize = backdropSize;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }*/
-
     public String getPosterPath() {
         return String.format("https://image.tmdb.org/t/p/%s%s", posterSize, posterPath);
     }
