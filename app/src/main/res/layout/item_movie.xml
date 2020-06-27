@@ -25,7 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_toEndOf="@+id/ivPoster"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -37,10 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTitle"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
         android:layout_toEndOf="@+id/ivPoster"
-        android:maxLength="150"
+        android:maxLength="250"
         android:textColor="@android:color/white"
         tools:text="Havana, Cuba, 1990. René González, an airplane pilot, unexpectedly flees the country, leaving behind his wife Olga and his daughter Irma, and begins a new life in Miami, where he becomes a member of an anti-Castro organization." />
 </RelativeLayout>

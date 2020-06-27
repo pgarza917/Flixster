@@ -94,30 +94,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             // If the phone is in portrait mode
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 // set imageUrl = posterPath
-                maxCharsDisplayed = 150;
+                maxCharsDisplayed = 75;
                 imgUrl = movie.getPosterPath();
                 placeholder = R.drawable.flicks_movie_placeholder;
             }
             // Else
             else {
                 // set imageUrl = backdropPath
-                maxCharsDisplayed = 250;
+                maxCharsDisplayed = 125;
                 imgUrl = movie.getBackdropPath();
                 placeholder = R.drawable.flicks_backdrop_placeholder;
             }
 
             String overview;
+            String sub;
             // If the movie's overview is less than 146 characters, we don't need to
             // concatenate a "..." as the entire overview can be displayed
             if (movie.getOverview().length() < maxCharsDisplayed - 4) {
-                overview = movie.getOverview();
+                sub = movie.getOverview();
             }
             // Else we have too long of an overview so we need to concatenate our overview
             // with a "..." to imply there's more to read
             else {
-                String sub = movie.getOverview().substring(0, maxCharsDisplayed - 4);
-                overview = String.format("%s...", sub);
+                sub = movie.getOverview().substring(0, maxCharsDisplayed - 4);
+
             }
+            overview = String.format("%s...", sub);
+            tvOverview.setMaxLines(3);
             tvOverview.setText(overview);
 
             // We need to use Glide to load movie poster/backdrop as no
@@ -127,7 +130,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     .load(imgUrl)
                     .placeholder(placeholder)
                     .transform(new RoundedCornersTransformation(radius, margin))
-                    //.override(ivPoster.getWidth(), ivPoster.getHeight())
                     .into(ivPoster);
         }
 
