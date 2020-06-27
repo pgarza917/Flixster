@@ -2,24 +2,17 @@ package com.example.flixster;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.models.Movie;
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import org.json.JSONArray;
@@ -29,7 +22,7 @@ import org.parceler.Parcels;
 
 import okhttp3.Headers;
 
-public class MovieDetailsActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
+public class MovieDetailsActivity extends AppCompatActivity /*implements YouTubePlayer.OnInitializedListener*/ {
     private static final String TAG = "MovieDetailsActivity";
     public static final int RECOVERY_REQUEST = 1;
 
@@ -63,9 +56,9 @@ public class MovieDetailsActivity extends YouTubeBaseActivity implements YouTube
         tvOverview = findViewById(R.id.tvOverview);
         ivBackdrop = findViewById(R.id.ivBackdrop);
         id = "";
-        youTubePlayerView = findViewById(R.id.youtubePlayerView);
+        //youTubePlayerView = findViewById(R.id.youtubePlayerView);
 
-        youTubePlayerView.initialize(getString(R.string.yt_api_key), this);
+        //youTubePlayerView.initialize(getString(R.string.yt_api_key), this);
 
         // Displaying movie title
         tvTitle.setText(movie.getTitle());
@@ -119,7 +112,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity implements YouTube
         });
     }
 
-    @Override
+    /*@Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         youTubePlayer.cueVideo(id);
         youTubePlayer.setFullscreen(false);
@@ -140,5 +133,5 @@ public class MovieDetailsActivity extends YouTubeBaseActivity implements YouTube
 
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return youTubePlayerView;
-    }
+    }*/
 }

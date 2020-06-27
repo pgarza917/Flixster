@@ -3,7 +3,6 @@ package com.example.flixster.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,22 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.codepath.asynchttpclient.AsyncHttpClient;
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.MovieDetailsActivity;
 import com.example.flixster.R;
 import com.example.flixster.models.Movie;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import okhttp3.Headers;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
