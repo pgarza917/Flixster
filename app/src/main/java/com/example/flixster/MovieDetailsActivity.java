@@ -36,6 +36,8 @@ public class MovieDetailsActivity extends AppCompatActivity /*implements YouTube
     TextView tvDate;
     TextView tvOverview;
     ImageView ivBackdrop;
+    TextView tvRating;
+    TextView tvPopularity;
     String id;
     YouTubePlayerView youTubePlayerView;
 
@@ -43,6 +45,7 @@ public class MovieDetailsActivity extends AppCompatActivity /*implements YouTube
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        getSupportActionBar().hide();
 
         // Retrieve and unwrap movie from previous Activity using Parcels.unwrap()
         movie = Parcels.unwrap(getIntent().getExtras().getParcelable(Movie.class.getSimpleName()));
@@ -55,6 +58,9 @@ public class MovieDetailsActivity extends AppCompatActivity /*implements YouTube
         tvDate = findViewById(R.id.tvDate);
         tvOverview = findViewById(R.id.tvOverview);
         ivBackdrop = findViewById(R.id.ivBackdrop);
+        tvRating = findViewById(R.id.tvRating);
+        tvPopularity = findViewById(R.id.tvPopularity);
+
         id = "";
         //youTubePlayerView = findViewById(R.id.youtubePlayerView);
 
@@ -64,12 +70,13 @@ public class MovieDetailsActivity extends AppCompatActivity /*implements YouTube
         tvTitle.setText(movie.getTitle());
 
         // Displaying movie release date with concatenation
-        String releaseDate = String.format("Released: %s", movie.getReleaseDate());
+        String releaseDate = String.format("Released: %s-%s-%s", movie.getReleaseDate().substring(5,7), movie.getReleaseDate().substring(8), movie.getReleaseDate().substring(0, 4));
         tvDate.setText(releaseDate);
 
         // Displaying movie overview and setting scrolling movement in case of long
         // overview
-        tvOverview.setText(movie.getOverview());
+        String overview = String.format("Synopsis:\n\n%s", movie.getOverview());
+        tvOverview.setText(overview);
         tvOverview.setMovementMethod(new ScrollingMovementMethod());
 
         // Displaying vote average with rating stars. Need to divide to scale to rating
@@ -79,6 +86,10 @@ public class MovieDetailsActivity extends AppCompatActivity /*implements YouTube
             voteAverage /= 2.0f;
         }
         rbVoteAverage.setRating(voteAverage);
+
+        // Displaying the popularity ranking out of 100
+        String popularity = String.format("Popularity: %.2f", movie.getPopularity());
+        tvPopularity.setText(popularity);
 
         // Displaying the backdrop image
         Glide.with(this)

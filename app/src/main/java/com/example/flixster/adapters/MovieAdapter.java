@@ -3,6 +3,7 @@ package com.example.flixster.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +45,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Log.d("MovieAdapter", "onCreateViewHolder");
         // Inflates the item_movie layout we previously defined to get a view
         View movieView = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false);
-        return new ViewHolder(movieView);
+        ViewHolder holder = new ViewHolder(movieView);
+        return holder;
     }
 
     // Involves population data into the item through the holder
@@ -80,6 +83,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         // Populate each view in the VH with its corresponding data in the Movie object
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
+
+            // Change color of movie title text and overview text to green if
+            // the movie vote average is above 6 and vote count is above 100
+            if (movie.getVoteAverage() > 7 && movie.getVoteCount() > 100) {
+                String colorGreen = "#21de54";
+                tvTitle.setTextColor(Color.parseColor(colorGreen));
+                tvOverview.setTextColor(Color.parseColor(colorGreen));
+            }
 
             String imgUrl;
             int placeholder, maxCharsDisplayed;

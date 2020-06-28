@@ -26,6 +26,8 @@ public class Movie {
     String posterSize;
     String backdropSize;
     String releaseDate;
+    Integer voteCount;
+    Double popularity;
     Double voteAverage;
     Integer id;
 
@@ -41,6 +43,8 @@ public class Movie {
         this.releaseDate = jsonObject.getString("release_date");
         this.voteAverage = jsonObject.getDouble("vote_average");
         this.id = jsonObject.getInt("id");
+        this.popularity = jsonObject.getDouble("popularity");
+        this.voteCount = jsonObject.getInt("vote_count");
         this.posterSize = "w342";
         this.backdropSize = "w780";
     }
@@ -82,5 +86,13 @@ public class Movie {
 
     public String getOverview() {
         return overview;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public Integer getVoteCount() {
+        return voteCount;
     }
 }
