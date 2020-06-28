@@ -24,7 +24,7 @@ The following **stretch** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] The text of the title and overview of the movie in the RecyclerView in the main activity will turn green if the movie has a vote average greater than 7 and a vote count greater than 100
+* [x] The text of the title and overview of the movie in the RecyclerView in the main activity will turn green if the movie has a vote average greater than 7 and a vote count greater than 100
 
 ## Video Walkthrough
 
